@@ -10,6 +10,7 @@ public class App
 {
     public static boolean isEven(int userNum){
         return userNum % 2 == 0;
+//        return (userNum & 1) == 0;
     }
 
     public static void main( String[] args )
