@@ -1,6 +1,5 @@
 package com.linkedin.javacodechallenges;
 
-import java.util.Scanner;
 
 /**
  * Hello world!
@@ -39,9 +38,11 @@ public class App
 
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
-        DoubleOrNothing game = new DoubleOrNothing();
-        game.playGame();
+        Person p1 = new Person();
+        p1.introduceYourself();
+        // System.out.println( "Hello World!" );
+        // DoubleOrNothing game = new DoubleOrNothing();
+        // game.playGame();
         // Scanner scanner = new Scanner(System.in);
         // System.out.println("Enter a password: ");
         // String password = scanner.next();

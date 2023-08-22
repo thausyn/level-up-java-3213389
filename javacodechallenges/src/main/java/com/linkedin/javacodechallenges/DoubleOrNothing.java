@@ -10,18 +10,18 @@ public class DoubleOrNothing {
   private int current = startPoints;
   private boolean isStillPlaying = true;
 
-  public void playGame(){
+  public void playGame() {
     printWelcome();
     askUserToContinue();
 
-    while(isStillPlaying){
+    while (isStillPlaying) {
       printTryToDouble();
 
-      if(shouldDouble()){
+      if (shouldDouble()) {
         doubleCurrent();
         printCongrats();
         askUserToContinue();
-      }else{
+      } else {
         printLost();
         return;
       }
@@ -30,40 +30,40 @@ public class DoubleOrNothing {
     printWalkAwayMessage();
   }
 
-  private void printWelcome(){
+  private void printWelcome() {
     System.out.println("Let's play Double or Nothing. We'll start you with 10 points!");
   }
 
-  private void printTryToDouble(){
+  private void printTryToDouble() {
     System.out.println("Let's try to double it!");
   }
 
-  private void printCongrats(){
+  private void printCongrats() {
     System.out.println("Congrats! You now have " + this.current + " points.");
   }
 
-  private void printLost(){
+  private void printLost() {
     System.out.println("Uh oh. You've lost. No points for you.");
   }
 
-  private void printWalkAwayMessage(){
+  private void printWalkAwayMessage() {
     System.out.println("Congrats! You finish with " + this.current + " points.");
   }
 
-  private boolean shouldDouble(){
+  private boolean shouldDouble() {
     return this.random.nextInt(2) == 0;
   }
 
-  private void doubleCurrent(){
+  private void doubleCurrent() {
     this.current *= 2;
   }
 
-  protected void askUserToContinue(){
+  protected void askUserToContinue() {
     System.out.println("Would you like to continue and try to double your winnings? Enter yes");
     this.isStillPlaying = this.scanner.nextLine().toUpperCase().equals("YES");
   }
 
-  protected boolean isStillPlaying(){
+  protected boolean isStillPlaying() {
     return this.isStillPlaying;
   }
 }
