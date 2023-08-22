@@ -36,10 +36,16 @@ public class App
         return hasNumber && hasLowercaseLetter && hasUppercaseLetter;
     }
 
+    public static String (){
+
+    }
+
     public static void main( String[] args )
     {
-        Person p1 = new Person("John", "Wong", 30);
-        p1.introduceYourself();
+        System.out.println("100 days from now is... ");
+
+        // Person p1 = new Person("John", "Wong", 30);
+        // p1.introduceYourself();
         // System.out.println( "Hello World!" );
         // DoubleOrNothing game = new DoubleOrNothing();
         // game.playGame();
