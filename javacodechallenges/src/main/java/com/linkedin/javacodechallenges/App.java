@@ -79,8 +79,17 @@ public class App {
     }
 
     public static void main(String[] args) {
-        List<Double> purchases = List.of(12.38, 38.29, 5.27, 3.21);
-        System.out.println(calculateAverageChangeInvested(purchases));
+        Team team1 = new Team("Sally", "Roger");
+        Team team2 = new Team("Eric", "Rebecca");
+        Team team3 = new Team("Tony", "Shannon");
+
+        List<Team> teams = List.of(team1, team2, team3);
+        int numberOfRounds = 4;
+
+        TeamUtils.generateTeamsScores(teams, numberOfRounds);
+        TeamUtils.revealResults(teams);
+        // List<Double> purchases = List.of(12.38, 38.29, 5.27, 3.21);
+        // System.out.println(calculateAverageChangeInvested(purchases));
 
         // List<StoreItem> items = List.of(
         //         new StoreItem("T-Shirt", 19.99, .4),
