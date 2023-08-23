@@ -72,18 +72,27 @@ public class App {
                 .collect(Collectors.toList());
     }
 
-    public static void main(String[] args) {
-        List<StoreItem> items = List.of(
-                new StoreItem("T-Shirt", 19.99, .4),
-                new StoreItem("Dress", 34.99, .75),
-                new StoreItem("Record Player", 92.99, .75),
-                new StoreItem("Hat", 23.99, .1),
-                new StoreItem("Jeans", 54.99, .65));
+    public static double calculateAverageChangeInvested(List<Double> purchases){
+        return purchases.stream()
+            .mapToDouble(x -> Math.ceil(x) - x)
+            .average().orElse(0);
+    }
 
-        Optional<StoreItem> leastExpensiveOpt = StoreItem.findLeastExpensive(items);
-        if (leastExpensiveOpt.isPresent()) {
-            System.out.println("The least expensive item is " + leastExpensiveOpt.get());
-        }
+    public static void main(String[] args) {
+        List<Double> purchases = List.of(12.38, 38.29, 5.27, 3.21);
+        System.out.println(calculateAverageChangeInvested(purchases));
+
+        // List<StoreItem> items = List.of(
+        //         new StoreItem("T-Shirt", 19.99, .4),
+        //         new StoreItem("Dress", 34.99, .75),
+        //         new StoreItem("Record Player", 92.99, .75),
+        //         new StoreItem("Hat", 23.99, .1),
+        //         new StoreItem("Jeans", 54.99, .65));
+
+        // Optional<StoreItem> leastExpensiveOpt = StoreItem.findLeastExpensive(items);
+        // if (leastExpensiveOpt.isPresent()) {
+        //     System.out.println("The least expensive item is " + leastExpensiveOpt.get());
+        // }
 
         // List<String> students = List.of("Sally", "Polly", "Molly", "Tony", "Harry");
 
