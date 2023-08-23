@@ -2,7 +2,12 @@ package com.linkedin.javacodechallenges;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Hello world!
@@ -51,18 +56,37 @@ public class App
         if(gallonsUsed > 2){
             currUsage += (gallonsUsed - 2) * 3.9;
         }
-        
+
         return currUsage;
+    }
+
+    public static List<String> findStudentWithIncompleteVolunteerEvents(
+        List<String> students, Map<String, List<String>> attendeesMapping){
+        Map<String, Integer> studentEventsCount = students.stream().collect(Collectors.toMap(s -> s, n -> 0));
+        attendeesMapping.values().forEach(list -> list.stream()
+        .filter(student -> studentEventsCount.containsKey(student))
+        .forEach(filteredStudent -> studentEventsCount
+        .put(filteredStudent, studentEventsCount.get(filteredStudent) + 1)));
+        return studentEventsCount.entrySet().stream().filter(map -> map.getValue() < 2)
+        .map(studentsWithIncompleteVolunteerEventsMap -> studentsWithIncompleteVolunteerEventsMap.getKey())
+        .collect(Collectors.toList());
     }
 
     public static void main( String[] args )
     {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("How many gallons of water did you use this month?");
-        double usage = scanner.nextDouble();
-        System.out.println("Your water bill is " + calculateWaterBill(usage));
-        scanner.close();
+        List<String> students = List.of("Sally", "Polly", "Molly", "Tony", "Harry");
 
+        Map<String, List<String>> attendeesMapping = Map.of("Farmer's Market", List.of("Sally", "Polly"),
+            "Car Wash", List.of("Polly", "Molly", "Tony"),
+            "Cooking", List.of("Polly", "Molly", "Sally"),
+            "Midnight", List.of("Polly", "Molly"));
+
+        System.out.println(findStudentWithIncompleteVolunteerEvents(students, attendeesMapping));
+        // Scanner scanner = new Scanner(System.in);
+        // System.out.println("How many gallons of water did you use this month?");
+        // double usage = scanner.nextDouble();
+        // System.out.println("Your water bill is " + calculateWaterBill(usage));
+        // scanner.close();
         // LocalDate today = LocalDate.now();
         // System.out.println("100 days from now is... " + calculateHundredDaysFromNow(today));
         // Person p1 = new Person("John", "Wong", 30);
