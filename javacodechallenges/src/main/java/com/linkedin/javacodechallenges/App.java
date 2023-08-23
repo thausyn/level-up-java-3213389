@@ -62,7 +62,7 @@ public class App
 
     public static List<String> findStudentWithIncompleteVolunteerEvents(
         List<String> students, Map<String, List<String>> attendeesMapping){
-        Map<String, Integer> studentEventsCount = students.stream().collect(Collectors.toMap(s -> s, n -> 0));
+        Map<String, Integer> studentEventsCount = students.stream().collect(Collectors.toMap(r -> r, i -> 0));
         attendeesMapping.values().forEach(list -> list.stream()
         .filter(student -> studentEventsCount.containsKey(student))
         .forEach(filteredStudent -> studentEventsCount
