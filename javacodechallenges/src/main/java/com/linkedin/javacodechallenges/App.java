@@ -5,6 +5,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -74,14 +75,27 @@ public class App
 
     public static void main( String[] args )
     {
-        List<String> students = List.of("Sally", "Polly", "Molly", "Tony", "Harry");
+        List<StoreItem> items = List.of(
+            new StoreItem("T-Shirt", 19.99, .4),
+            new StoreItem("Dress", 34.99, .75),
+            new StoreItem("Record Player", 92.99, .75),
+            new StoreItem("Hat", 23.99, .1),
+            new StoreItem("Jeans", 54.99, .65));
 
-        Map<String, List<String>> attendeesMapping = Map.of("Farmer's Market", List.of("Sally", "Polly"),
-            "Car Wash", List.of("Polly", "Molly", "Tony"),
-            "Cooking", List.of("Polly", "Molly", "Sally"),
-            "Midnight", List.of("Polly", "Molly"));
+            Optional<StoreItem> leastExpensiveOpt = StoreItem.findLeastExpensive(items);
+            if(leastExpensiveOpt.isPresent()){
+                System.out.println("The least expensive item is " + leastExpensiveOpt.get());
+            }
 
-        System.out.println(findStudentWithIncompleteVolunteerEvents(students, attendeesMapping));
+        
+        // List<String> students = List.of("Sally", "Polly", "Molly", "Tony", "Harry");
+
+        // Map<String, List<String>> attendeesMapping = Map.of("Farmer's Market", List.of("Sally", "Polly"),
+        //     "Car Wash", List.of("Polly", "Molly", "Tony"),
+        //     "Cooking", List.of("Polly", "Molly", "Sally"),
+        //     "Midnight", List.of("Polly", "Molly"));
+
+        // System.out.println(findStudentWithIncompleteVolunteerEvents(students, attendeesMapping));
         // Scanner scanner = new Scanner(System.in);
         // System.out.println("How many gallons of water did you use this month?");
         // double usage = scanner.nextDouble();
