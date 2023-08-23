@@ -14,15 +14,14 @@ import java.util.stream.Collectors;
  * Hello world!
  *
  */
-public class App 
-{
-    public static boolean isEven(int userNum){
+public class App {
+    public static boolean isEven(int userNum) {
         return userNum % 2 == 0;
-//        return (userNum & 1) == 0;
+        // return (userNum & 1) == 0;
     }
 
-    public static boolean isComplex(String p){
-        if(p.length() < 6){
+    public static boolean isComplex(String p) {
+        if (p.length() < 6) {
             return false;
         }
 
@@ -30,14 +29,14 @@ public class App
         boolean hasLowercaseLetter = false;
         boolean hasUppercaseLetter = false;
 
-        for(int i = 0; i < p.length() || !hasLowercaseLetter && !hasUppercaseLetter && !hasNumber; i++){
+        for (int i = 0; i < p.length() || !hasLowercaseLetter && !hasUppercaseLetter && !hasNumber; i++) {
             char current = p.charAt(i);
 
-            if(Character.isDigit(current)){
+            if (Character.isDigit(current)) {
                 hasNumber = true;
-            }else if(Character.isLowerCase(current)){
+            } else if (Character.isLowerCase(current)) {
                 hasLowercaseLetter = true;
-            }else if(Character.isUpperCase(current)){
+            } else if (Character.isUpperCase(current)) {
                 hasUppercaseLetter = true;
             }
         }
@@ -45,16 +44,16 @@ public class App
         return hasNumber && hasLowercaseLetter && hasUppercaseLetter;
     }
 
-    public static LocalDate calculateHundredDaysFromNow(LocalDate today){
+    public static LocalDate calculateHundredDaysFromNow(LocalDate today) {
         Period hundredDays = Period.ofDays(100);
         return today.plus(hundredDays);
     }
 
-    public static double calculateWaterBill(double usage){
+    public static double calculateWaterBill(double usage) {
         double currUsage = 18.84;
         double gallonsUsed = Math.ceil(usage / 748);
 
-        if(gallonsUsed > 2){
+        if (gallonsUsed > 2) {
             currUsage += (gallonsUsed - 2) * 3.9;
         }
 
@@ -62,47 +61,48 @@ public class App
     }
 
     public static List<String> findStudentWithIncompleteVolunteerEvents(
-        List<String> students, Map<String, List<String>> attendeesMapping){
+            List<String> students, Map<String, List<String>> attendeesMapping) {
         Map<String, Integer> studentEventsCount = students.stream().collect(Collectors.toMap(r -> r, i -> 0));
         attendeesMapping.values().forEach(list -> list.stream()
-        .filter(student -> studentEventsCount.containsKey(student))
-        .forEach(filteredStudent -> studentEventsCount
-        .put(filteredStudent, studentEventsCount.get(filteredStudent) + 1)));
+                .filter(student -> studentEventsCount.containsKey(student))
+                .forEach(filteredStudent -> studentEventsCount
+                        .put(filteredStudent, studentEventsCount.get(filteredStudent) + 1)));
         return studentEventsCount.entrySet().stream().filter(map -> map.getValue() < 2)
-        .map(studentsWithIncompleteVolunteerEventsMap -> studentsWithIncompleteVolunteerEventsMap.getKey())
-        .collect(Collectors.toList());
+                .map(studentsWithIncompleteVolunteerEventsMap -> studentsWithIncompleteVolunteerEventsMap.getKey())
+                .collect(Collectors.toList());
     }
 
-    public static void main( String[] args )
-    {
+    public static void main(String[] args) {
         List<StoreItem> items = List.of(
-            new StoreItem("T-Shirt", 19.99, .4),
-            new StoreItem("Dress", 34.99, .75),
-            new StoreItem("Record Player", 92.99, .75),
-            new StoreItem("Hat", 23.99, .1),
-            new StoreItem("Jeans", 54.99, .65));
+                new StoreItem("T-Shirt", 19.99, .4),
+                new StoreItem("Dress", 34.99, .75),
+                new StoreItem("Record Player", 92.99, .75),
+                new StoreItem("Hat", 23.99, .1),
+                new StoreItem("Jeans", 54.99, .65));
 
-            Optional<StoreItem> leastExpensiveOpt = StoreItem.findLeastExpensive(items);
-            if(leastExpensiveOpt.isPresent()){
-                System.out.println("The least expensive item is " + leastExpensiveOpt.get());
-            }
+        Optional<StoreItem> leastExpensiveOpt = StoreItem.findLeastExpensive(items);
+        if (leastExpensiveOpt.isPresent()) {
+            System.out.println("The least expensive item is " + leastExpensiveOpt.get());
+        }
 
-        
         // List<String> students = List.of("Sally", "Polly", "Molly", "Tony", "Harry");
 
-        // Map<String, List<String>> attendeesMapping = Map.of("Farmer's Market", List.of("Sally", "Polly"),
-        //     "Car Wash", List.of("Polly", "Molly", "Tony"),
-        //     "Cooking", List.of("Polly", "Molly", "Sally"),
-        //     "Midnight", List.of("Polly", "Molly"));
+        // Map<String, List<String>> attendeesMapping = Map.of("Farmer's Market",
+        // List.of("Sally", "Polly"),
+        // "Car Wash", List.of("Polly", "Molly", "Tony"),
+        // "Cooking", List.of("Polly", "Molly", "Sally"),
+        // "Midnight", List.of("Polly", "Molly"));
 
-        // System.out.println(findStudentWithIncompleteVolunteerEvents(students, attendeesMapping));
+        // System.out.println(findStudentWithIncompleteVolunteerEvents(students,
+        // attendeesMapping));
         // Scanner scanner = new Scanner(System.in);
         // System.out.println("How many gallons of water did you use this month?");
         // double usage = scanner.nextDouble();
         // System.out.println("Your water bill is " + calculateWaterBill(usage));
         // scanner.close();
         // LocalDate today = LocalDate.now();
-        // System.out.println("100 days from now is... " + calculateHundredDaysFromNow(today));
+        // System.out.println("100 days from now is... " +
+        // calculateHundredDaysFromNow(today));
         // Person p1 = new Person("John", "Wong", 30);
         // p1.introduceYourself();
         // System.out.println( "Hello World!" );

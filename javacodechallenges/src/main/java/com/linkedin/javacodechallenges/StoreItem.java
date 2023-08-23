@@ -2,11 +2,15 @@ package com.linkedin.javacodechallenges;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class StoreItem {
   String name;
   double retailPrice;
@@ -21,5 +25,8 @@ public class StoreItem {
     return retailPrice - (retailPrice * discount);
   }
 
-  publ
+  @Override
+  public String toString(){
+    return "Name: " + name + ", Retail Price: " + retailPrice + ", Discount: " + discount;
+  }
 }
