@@ -1,5 +1,8 @@
 package com.linkedin.javacodechallenges;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.Scanner;
 
 /**
  * Hello world!
@@ -36,14 +39,32 @@ public class App
         return hasNumber && hasLowercaseLetter && hasUppercaseLetter;
     }
 
-    public static String (){
+    public static LocalDate calculateHundredDaysFromNow(LocalDate today){
+        Period hundredDays = Period.ofDays(100);
+        return today.plus(hundredDays);
+    }
 
+    public static double calculateWaterBill(double usage){
+        double currUsage = 18.84;
+        double gallonsUsed = Math.ceil(usage / 748);
+
+        if(gallonsUsed > 2){
+            currUsage += (gallonsUsed - 2) * 3.9;
+        }
+        
+        return currUsage;
     }
 
     public static void main( String[] args )
     {
-        System.out.println("100 days from now is... ");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("How many gallons of water did you use this month?");
+        double usage = scanner.nextDouble();
+        System.out.println("Your water bill is " + calculateWaterBill(usage));
+        scanner.close();
 
+        // LocalDate today = LocalDate.now();
+        // System.out.println("100 days from now is... " + calculateHundredDaysFromNow(today));
         // Person p1 = new Person("John", "Wong", 30);
         // p1.introduceYourself();
         // System.out.println( "Hello World!" );
@@ -56,6 +77,5 @@ public class App
         // System.out.println("Enter a number: ");
         // int userNum = scanner.nextInt();
         // System.out.println("Is the number even? " + isEven(userNum));
-        // scanner.close();
     }
 }
