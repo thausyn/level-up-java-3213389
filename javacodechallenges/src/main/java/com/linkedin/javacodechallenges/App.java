@@ -1,5 +1,10 @@
 package com.linkedin.javacodechallenges;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -9,7 +14,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
+import com.google.gson.Gson;
 /**
  * Hello world!
  *
@@ -78,16 +83,39 @@ public class App {
             .average().orElse(0);
     }
 
-    public static void main(String[] args) {
-        Team team1 = new Team("Sally", "Roger");
-        Team team2 = new Team("Eric", "Rebecca");
-        Team team3 = new Team("Tony", "Shannon");
+    private static Optional<String> parseJoke(String responseBody) {
+        try{
+            JokeResponse jokeResponse = new Gson().fromJson(responseBody, JokeResponse.class);
+            String joke = jokeResponse.getJoke();
+            if(joke != null){
+                return Optional.of(jokeResponse.getJoke());
+            }
+            return Optional.empty();
+        }catch(Exception e){
+            System.out.println("Must be out of jokes for now.");
+            return Optional.empty();
+        }
+    }
+    
+    public static void main(String[] args) throws IOException, InterruptedException{
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder(
+            URI.create("https://icanhazdadjoke.com/"))
+            .header("accept", "application/json")
+            .build();
+        var response = client.send(request, BodyHandlers.ofString());
+        Optional<String> jokeOpt = parseJoke(response.body());
+        jokeOpt.ifPresent(System.out::println);
 
-        List<Team> teams = List.of(team1, team2, team3);
-        int numberOfRounds = 4;
+        // Team team1 = new Team("Sally", "Roger");
+        // Team team2 = new Team("Eric", "Rebecca");
+        // Team team3 = new Team("Tony", "Shannon");
 
-        TeamUtils.generateTeamsScores(teams, numberOfRounds);
-        TeamUtils.revealResults(teams);
+        // List<Team> teams = List.of(team1, team2, team3);
+        // int numberOfRounds = 4;
+
+        // TeamUtils.generateTeamsScores(teams, numberOfRounds);
+        // TeamUtils.revealResults(teams);
         // List<Double> purchases = List.of(12.38, 38.29, 5.27, 3.21);
         // System.out.println(calculateAverageChangeInvested(purchases));
 
