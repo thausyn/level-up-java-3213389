@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import javax.swing.RowFilter.Entry;
+
 import com.google.gson.Gson;
 /**
  * Hello world!
@@ -97,15 +101,42 @@ public class App {
         }
     }
     
+    public static final Map<Character, Integer> letterPoints = Map.ofEntries(Map.entry('A', 1),
+        Map.entry('B', 3), Map.entry('C', 3), Map.entry('D', 2));
+
+    public static int wordScoreCalculator(String word){
+        String normalized = word.toUpperCase();
+        AtomicInteger score = new AtomicInteger(0);
+ 
+        normalized.chars()
+        .filter(Character::isAlphabetic)
+        .mapToObj(n -> (char) n)
+        .forEachOrdered(letter -> {
+            if(letterPoints.containsKey(letter)){
+                score.getAndAdd(letterPoints.get(letter));
+            }else{
+                System.out.println("Looks like we need to add " + letter);
+            }
+        });
+ 
+        return score.get();
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException{
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder(
-            URI.create("https://icanhazdadjoke.com/"))
-            .header("accept", "application/json")
-            .build();
-        var response = client.send(request, BodyHandlers.ofString());
-        Optional<String> jokeOpt = parseJoke(response.body());
-        jokeOpt.ifPresent(System.out::println);
+        System.out.println("Enter a word and we'll tell you how many points it will earn!");
+        Scanner scanner = new Scanner(System.in);
+        String word = scanner.next();
+        System.out.println("Your word " + word + " will earn " + wordScoreCalculator(word));
+        scanner.close();
+
+        // var client = HttpClient.newHttpClient();
+        // var request = HttpRequest.newBuilder(
+        //     URI.create("https://icanhazdadjoke.com/"))
+        //     .header("accept", "application/json")
+        //     .build();
+        // var response = client.send(request, BodyHandlers.ofString());
+        // Optional<String> jokeOpt = parseJoke(response.body());
+        // jokeOpt.ifPresent(System.out::println);
 
         // Team team1 = new Team("Sally", "Roger");
         // Team team2 = new Team("Eric", "Rebecca");
