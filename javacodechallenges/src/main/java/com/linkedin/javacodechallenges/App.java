@@ -1,5 +1,7 @@
 package com.linkedin.javacodechallenges;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -8,6 +10,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,6 +22,8 @@ import java.util.stream.Collectors;
 import javax.swing.RowFilter.Entry;
 
 import com.google.gson.Gson;
+import com.opencsv.exceptions.CsvValidationException;
+
 /**
  * Hello world!
  *
@@ -81,59 +86,103 @@ public class App {
                 .collect(Collectors.toList());
     }
 
-    public static double calculateAverageChangeInvested(List<Double> purchases){
+    public static double calculateAverageChangeInvested(List<Double> purchases) {
         return purchases.stream()
-            .mapToDouble(x -> Math.ceil(x) - x)
-            .average().orElse(0);
+                .mapToDouble(x -> Math.ceil(x) - x)
+                .average().orElse(0);
     }
 
     private static Optional<String> parseJoke(String responseBody) {
-        try{
+        try {
             JokeResponse jokeResponse = new Gson().fromJson(responseBody, JokeResponse.class);
             String joke = jokeResponse.getJoke();
-            if(joke != null){
+            if (joke != null) {
                 return Optional.of(jokeResponse.getJoke());
             }
             return Optional.empty();
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Must be out of jokes for now.");
             return Optional.empty();
         }
     }
-    
-    public static final Map<Character, Integer> letterPoints = Map.ofEntries(Map.entry('A', 1),
-        Map.entry('B', 3), Map.entry('C', 3), Map.entry('D', 2));
 
-    public static int wordScoreCalculator(String word){
+    public static final Map<Character, Integer> letterPoints = Map.ofEntries(Map.entry('A', 1),
+            Map.entry('B', 3), Map.entry('C', 3), Map.entry('D', 2));
+
+    public static int wordScoreCalculator(String word) {
         String normalized = word.toUpperCase();
         AtomicInteger score = new AtomicInteger(0);
- 
+
         normalized.chars()
-        .filter(Character::isAlphabetic)
-        .mapToObj(n -> (char) n)
-        .forEachOrdered(letter -> {
-            if(letterPoints.containsKey(letter)){
-                score.getAndAdd(letterPoints.get(letter));
-            }else{
-                System.out.println("Looks like we need to add " + letter);
-            }
-        });
- 
+                .filter(Character::isAlphabetic)
+                .mapToObj(n -> (char) n)
+                .forEachOrdered(letter -> {
+                    if (letterPoints.containsKey(letter)) {
+                        score.getAndAdd(letterPoints.get(letter));
+                    } else {
+                        System.out.println("Looks like we need to add " + letter);
+                    }
+                });
+
         return score.get();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException{
-        System.out.println("Enter a word and we'll tell you how many points it will earn!");
+    public static void redactTextFile(String filename, String[] redactedWordsArray) {
+        if (!filename.contains(".txt")) {
+            System.out.println("This is not a text file.");
+            return;
+        }
+
+        // try{
+        //     File originalFile = new File(filename);
+        //     BufferedReader originalFileReader = new BufferedReader(new File(filename));
+        // }
+    }
+
+    public static void main(String[] args) {//throws IOException, InterruptedException {
+        List<Ticketholder> ticketholdersList = new ArrayList<>();
+        try{
+            ticketholdersList.addAll(TicketUtils.importTicketHoldersFromCSV("ticketholders.csv"));
+        }catch(IOException|CsvValidationException e){
+            System.out.println(e);
+        }
+
         Scanner scanner = new Scanner(System.in);
-        String word = scanner.next();
-        System.out.println("Your word " + word + " will earn " + wordScoreCalculator(word));
+        System.out.println("What is the full name under the ticket?");
+        String name = scanner.nextLine();
+
+        Optional<Ticketholder> ticketHolderOpt = TicketUtils.findTicketHolder(name, ticketholdersList);
+
+        if(ticketHolderOpt.isEmpty()){
+            System.out.println("I can't let you in because I can't find your name");
+            scanner.close();
+            return;
+        }
+
+        System.out.println("How many are in your party?");
+        int numberInParty = scanner.nextInt();
         scanner.close();
+
+        Ticketholder ticketHolder = ticketHolderOpt.get();
+
+        if(!TicketUtils.processTickets(ticketHolder, numberInParty, ticketholdersList)){
+            System.out.println("I can't let your party in because you didn't buy enough tickets.");
+            return;
+        }
+
+        System.out.println("Enjoy the show!");
+
+        // System.out.println("Enter a word and we'll tell you how many points it will earn!");
+        // Scanner scanner = new Scanner(System.in);
+        // String word = scanner.next();
+        // System.out.println("Your word " + word + " will earn " + wordScoreCalculator(word));
+        // scanner.close();
 
         // var client = HttpClient.newHttpClient();
         // var request = HttpRequest.newBuilder(
-        //     URI.create("https://icanhazdadjoke.com/"))
-        //     .header("accept", "application/json")
-        //     .build();
+        // URI.create("https://icanhazdadjoke.com/"))
+        // .header("accept", "application/json")
+        // .build();
         // var response = client.send(request, BodyHandlers.ofString());
         // Optional<String> jokeOpt = parseJoke(response.body());
         // jokeOpt.ifPresent(System.out::println);
@@ -151,15 +200,15 @@ public class App {
         // System.out.println(calculateAverageChangeInvested(purchases));
 
         // List<StoreItem> items = List.of(
-        //         new StoreItem("T-Shirt", 19.99, .4),
-        //         new StoreItem("Dress", 34.99, .75),
-        //         new StoreItem("Record Player", 92.99, .75),
-        //         new StoreItem("Hat", 23.99, .1),
-        //         new StoreItem("Jeans", 54.99, .65));
+        // new StoreItem("T-Shirt", 19.99, .4),
+        // new StoreItem("Dress", 34.99, .75),
+        // new StoreItem("Record Player", 92.99, .75),
+        // new StoreItem("Hat", 23.99, .1),
+        // new StoreItem("Jeans", 54.99, .65));
 
         // Optional<StoreItem> leastExpensiveOpt = StoreItem.findLeastExpensive(items);
         // if (leastExpensiveOpt.isPresent()) {
-        //     System.out.println("The least expensive item is " + leastExpensiveOpt.get());
+        // System.out.println("The least expensive item is " + leastExpensiveOpt.get());
         // }
 
         // List<String> students = List.of("Sally", "Polly", "Molly", "Tony", "Harry");
