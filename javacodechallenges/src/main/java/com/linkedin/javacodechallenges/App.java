@@ -1,7 +1,10 @@
 package com.linkedin.javacodechallenges;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -20,6 +23,8 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.swing.RowFilter.Entry;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.opencsv.exceptions.CsvValidationException;
@@ -133,44 +138,74 @@ public class App {
             return;
         }
 
-        // try{
-        //     File originalFile = new File(filename);
-        //     BufferedReader originalFileReader = new BufferedReader(new File(filename));
-        // }
+        try{
+            File originalFile = new File(filename);
+            BufferedReader originalFileReader = new BufferedReader(new FileReader(originalFile));
+
+            File redactFile = new File("redacted-" + filename);
+            BufferedWriter redactedFileWriter = new BufferedWriter(new FileWriter(redactFile));
+
+            String currentLine = originalFileReader.readLine();
+
+            while(currentLine != null){
+                for(String redactWord:redactedWordsArray){
+                    currentLine = StringUtils.replaceIgnoreCase(currentLine, redactWord, "REDACTED");
+                }
+
+                redactedFileWriter.append(currentLine).append("\n");
+                currentLine = originalFileReader.readLine();
+            }
+
+            originalFileReader.close();
+            redactedFileWriter.close();
+            
+        }catch(IOException e){
+            System.out.println("Trouble reading or writing to file" + e);
+        }
     }
 
     public static void main(String[] args) {//throws IOException, InterruptedException {
-        List<Ticketholder> ticketholdersList = new ArrayList<>();
-        try{
-            ticketholdersList.addAll(TicketUtils.importTicketHoldersFromCSV("ticketholders.csv"));
-        }catch(IOException|CsvValidationException e){
-            System.out.println(e);
-        }
-
         Scanner scanner = new Scanner(System.in);
-        System.out.println("What is the full name under the ticket?");
-        String name = scanner.nextLine();
-
-        Optional<Ticketholder> ticketHolderOpt = TicketUtils.findTicketHolder(name, ticketholdersList);
-
-        if(ticketHolderOpt.isEmpty()){
-            System.out.println("I can't let you in because I can't find your name");
-            scanner.close();
-            return;
-        }
-
-        System.out.println("How many are in your party?");
-        int numberInParty = scanner.nextInt();
+        System.out.println("What file would you like to redact information from?");
+        String fileName = scanner.nextLine();
+        System.out.println("What words would you like to react? Separate each word or phrase with a comma. " +
+        "If your phrase includes punctuation, include that in your input.");
+        String wordsToRedact = scanner.nextLine();
+        String[] wordsToRedactList = wordsToRedact.split(",");
+        redactTextFile(fileName, wordsToRedactList);
         scanner.close();
 
-        Ticketholder ticketHolder = ticketHolderOpt.get();
+        // List<Ticketholder> ticketholdersList = new ArrayList<>();
+        // try{
+        //     ticketholdersList.addAll(TicketUtils.importTicketHoldersFromCSV("ticketholders.csv"));
+        // }catch(IOException|CsvValidationException e){
+        //     System.out.println(e);
+        // }
 
-        if(!TicketUtils.processTickets(ticketHolder, numberInParty, ticketholdersList)){
-            System.out.println("I can't let your party in because you didn't buy enough tickets.");
-            return;
-        }
+        // Scanner scanner = new Scanner(System.in);
+        // System.out.println("What is the full name under the ticket?");
+        // String name = scanner.nextLine();
 
-        System.out.println("Enjoy the show!");
+        // Optional<Ticketholder> ticketHolderOpt = TicketUtils.findTicketHolder(name, ticketholdersList);
+
+        // if(ticketHolderOpt.isEmpty()){
+        //     System.out.println("I can't let you in because I can't find your name");
+        //     scanner.close();
+        //     return;
+        // }
+
+        // System.out.println("How many are in your party?");
+        // int numberInParty = scanner.nextInt();
+        // scanner.close();
+
+        // Ticketholder ticketHolder = ticketHolderOpt.get();
+
+        // if(!TicketUtils.processTickets(ticketHolder, numberInParty, ticketholdersList)){
+        //     System.out.println("I can't let your party in because you didn't buy enough tickets.");
+        //     return;
+        // }
+
+        // System.out.println("Enjoy the show!");
 
         // System.out.println("Enter a word and we'll tell you how many points it will earn!");
         // Scanner scanner = new Scanner(System.in);
